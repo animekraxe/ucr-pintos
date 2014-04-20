@@ -210,8 +210,6 @@ thread_create (const char *name, int priority,
   sf->eip = switch_entry;
   sf->ebp = 0;
 
-  t->sleepTicks = 0;
-
   intr_set_level (old_level);
 
   /* Add to run queue. */
@@ -358,19 +356,32 @@ void
 thread_set_priority (int new_priority) 
 {
   enum intr_level old_level = intr_disable();
-  thread_current ()->priority = new_priority;
 
-  check_preempt();
+  struct thread* current = thread_current();
+  current->base_priority = new_priority;
+  update_donations(current);
+
+  //current->base_priority = new_priority;
+  //if(new_priority > current->priority)
+  //  current->priority = new_priority;
 
   /*
-  // Need to check Preempt
-  if (!list_empty(&ready_list))
-  {
-    struct thread* t = list_entry(list_front(&ready_list), struct thread, elem);
-    if (new_priority < t->priority)
-      thread_yield();
-  }
-  */
+    int old_priority = thread_current()->priority;
+  thread_current ()->base_priority = new_priority;
+  refresh_priority();
+  // If new priority is greater, donate it
+  if (old_priority < thread_current()->priority)
+    {
+      donate_priority();
+    }
+  // If new priority is less, test if the processor should be yielded
+  if (old_priority > thread_current()->priority)
+    {
+        check_preempt();
+    }
+*/
+
+  check_preempt();
 
   intr_set_level(old_level);
 }
@@ -498,6 +509,12 @@ init_thread (struct thread *t, const char *name, int priority)
   t->stack = (uint8_t *) t + PGSIZE;
   t->priority = priority;
   t->magic = THREAD_MAGIC;
+  
+  t->sleepTicks = 0;
+  t->base_priority = priority;
+  t->waitlock = NULL;
+  list_init(&t->waitlock_list);
+
   list_push_back (&all_list, &t->allelem);
 }
 
@@ -584,6 +601,7 @@ thread_schedule_tail (struct thread *prev)
 static void
 schedule (void) 
 {
+  //printf("DANGEROUS SCHEDULING... %d\n", thread_current());
   struct thread *cur = running_thread ();
   struct thread *next = next_thread_to_run ();
   struct thread *prev = NULL;
@@ -675,4 +693,136 @@ void check_preempt (void)
     else 
       thread_yield();
   }
+
+/*
+
+  if (intr_context())
+    if (thread_ticks >= TIME_SLICE && thread_current()->priority == max->priority)
+      intr_yield_on_return();
+      */
+}
+
+
+
+void add_to_waitlist (struct thread* t)
+{
+  list_insert_ordered(&t->waitlock_list, 
+                      &thread_current()->waitlockelem,
+                      &priority_greater, NULL);
+}
+
+void update_release (struct lock* lock)
+{
+  //struct list_elem* e;
+  //struct thread* current = thread_current();
+
+  /*
+  for (e = list_begin (&current->waitlock_list); 
+       e != list_end (&current->waitlock_list);
+       e = list_next (e))
+    {
+      struct thread *t = list_entry (e, struct thread, waitlockelem);
+      if (t->waitlock == lock)
+        e = list_remove(&t->waitlockelem)->prev;
+    }
+    */
+
+  struct list_elem *e = list_begin(&thread_current()->waitlock_list);
+  struct list_elem *next;
+  while (e != list_end(&thread_current()->waitlock_list))
+  {
+      struct thread *t = list_entry(e, struct thread, waitlockelem);
+      next = list_next(e);
+      if (t->waitlock == lock)
+      {
+       list_remove(e);
+      }
+      e = next;
+  }
+}
+
+void update_donations (struct thread* t)
+{
+  t->priority = t->base_priority;
+
+  if (list_empty(&t->waitlock_list)) return;
+
+  //list_sort(&t->waitlock_list, &priority_greater, NULL);
+  //struct thread* max = list_entry(list_front(&t->waitlock_list), struct thread, waitlockelem);
+  struct list_elem* frontE = list_front(&t->waitlock_list);
+  struct list_elem* maxE = list_max(&t->waitlock_list, &priority_greater, NULL);
+
+  //List is out of order
+  if (frontE != maxE) {
+    struct thread* max = list_entry(maxE, struct thread, waitlockelem);
+    list_remove(maxE);
+    list_insert_ordered(&t->waitlock_list,
+                        &max->waitlockelem,
+                        &priority_greater, NULL);
+  }
+
+  struct thread* max = list_entry(list_front(&t->waitlock_list), struct thread, waitlockelem);
+
+  if (max->priority > t->priority)
+    t->priority = max->priority;
+
+  if (t->waitlock != NULL)
+    update_donations(t->waitlock->holder);
+}
+
+#define DEPTH_LIMIT 8
+
+void donate_priority (void)
+{
+  int depth = 0;
+  struct thread *t = thread_current();
+  struct lock *l = t->waitlock;
+  while (l && depth < DEPTH_LIMIT)
+    {
+      depth++;
+      // If lock is not being held, return
+      if (!l->holder)
+  {
+    return;
+  }
+      if (l->holder->priority >= t->priority)
+  {
+    return;
+  }
+      l->holder->priority = t->priority;
+      t = l->holder;
+      l = t->waitlock;
+    }
+}
+
+void remove_with_lock(struct lock *lock)
+{
+  struct list_elem *e = list_begin(&thread_current()->waitlock_list);
+  struct list_elem *next;
+  while (e != list_end(&thread_current()->waitlock_list))
+    {
+      struct thread *t = list_entry(e, struct thread, waitlockelem);
+      next = list_next(e);
+      if (t->waitlock == lock)
+  {
+    list_remove(e);
+  }
+      e = next;
+    }
+}
+
+void refresh_priority (void)
+{
+  struct thread *t = thread_current();
+  t->priority = t->base_priority;
+  if (list_empty(&t->waitlock_list))
+    {
+      return;
+    }
+  struct thread *s = list_entry(list_front(&t->waitlock_list),
+        struct thread, waitlockelem);
+  if (s->priority > t->priority)
+    {
+      t->priority = s->priority;
+    }
 }

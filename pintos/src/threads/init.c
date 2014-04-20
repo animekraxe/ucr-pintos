@@ -95,7 +95,9 @@ main (void)
           init_ram_pages * PGSIZE / 1024);
 
   /* Initialize memory system. */
+  printf("PALLOC?\n");
   palloc_init (user_page_limit);
+  printf("NOT PALLOC\n");
   malloc_init ();
   paging_init ();
 

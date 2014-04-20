@@ -1,36 +1,38 @@
-qemu -hda /tmp/NfM11JJloN.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/KyATgCTmA6.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q run priority-donate-multiple
 
 THREAD INIT
 Pintos booting with 4,096 kB RAM...
+PALLOC?
 383 pages available in kernel pool.
 383 pages available in user pool.
+NOT PALLOC
 INITS
 END INITS
 
 B THREAD START
 
 END THREAD START
-Calibrating timer...  117,760,000 loops/s.
+Calibrating timer...  111,206,400 loops/s.
 Boot complete.
 Executing 'priority-donate-multiple':
 (priority-donate-multiple) begin
-(priority-donate-multiple) Main thread should have priority 32.  Actual priority: 31.
-(priority-donate-multiple) Main thread should have priority 33.  Actual priority: 31.
+(priority-donate-multiple) Main thread should have priority 32.  Actual priority: 32.
+(priority-donate-multiple) Main thread should have priority 33.  Actual priority: 33.
 (priority-donate-multiple) Thread b acquired lock b.
 (priority-donate-multiple) Thread b finished.
 (priority-donate-multiple) Thread b should have just finished.
-(priority-donate-multiple) Main thread should have priority 32.  Actual priority: 31.
+(priority-donate-multiple) Main thread should have priority 32.  Actual priority: 32.
 (priority-donate-multiple) Thread a acquired lock a.
 (priority-donate-multiple) Thread a finished.
 (priority-donate-multiple) Thread a should have just finished.
 (priority-donate-multiple) Main thread should have priority 31.  Actual priority: 31.
 (priority-donate-multiple) end
 Execution of 'priority-donate-multiple' complete.
-Timer: 28 ticks
-Thread: 0 idle ticks, 28 kernel ticks, 0 user ticks
-Console: 1168 characters output
+Timer: 29 ticks
+Thread: 0 idle ticks, 29 kernel ticks, 0 user ticks
+Console: 1187 characters output
 Keyboard: 0 keys pressed
 Powering off...

@@ -1,25 +1,27 @@
-qemu -hda /tmp/5vBNBTx47t.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/LPTh_9EX4A.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q run priority-donate-nest
 
 THREAD INIT
 Pintos booting with 4,096 kB RAM...
+PALLOC?
 383 pages available in kernel pool.
 383 pages available in user pool.
+NOT PALLOC
 INITS
 END INITS
 
 B THREAD START
 
 END THREAD START
-Calibrating timer...  117,760,000 loops/s.
+Calibrating timer...  111,206,400 loops/s.
 Boot complete.
 Executing 'priority-donate-nest':
 (priority-donate-nest) begin
-(priority-donate-nest) Low thread should have priority 32.  Actual priority: 31.
-(priority-donate-nest) Low thread should have priority 33.  Actual priority: 31.
-(priority-donate-nest) Medium thread should have priority 33.  Actual priority: 32.
+(priority-donate-nest) Low thread should have priority 32.  Actual priority: 32.
+(priority-donate-nest) Low thread should have priority 33.  Actual priority: 33.
+(priority-donate-nest) Medium thread should have priority 33.  Actual priority: 33.
 (priority-donate-nest) Medium thread got the lock.
 (priority-donate-nest) High thread got the lock.
 (priority-donate-nest) High thread finished.
@@ -29,8 +31,8 @@ Executing 'priority-donate-nest':
 (priority-donate-nest) Low thread should have priority 31.  Actual priority: 31.
 (priority-donate-nest) end
 Execution of 'priority-donate-nest' complete.
-Timer: 27 ticks
-Thread: 0 idle ticks, 28 kernel ticks, 0 user ticks
-Console: 1125 characters output
+Timer: 29 ticks
+Thread: 0 idle ticks, 29 kernel ticks, 0 user ticks
+Console: 1144 characters output
 Keyboard: 0 keys pressed
 Powering off...

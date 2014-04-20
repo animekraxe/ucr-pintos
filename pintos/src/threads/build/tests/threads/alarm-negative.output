@@ -1,12 +1,14 @@
-qemu -hda /tmp/FobK_2TbWV.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/HLWfNIBB6t.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q run alarm-negative
 
 THREAD INIT
 Pintos booting with 4,096 kB RAM...
+PALLOC?
 383 pages available in kernel pool.
 383 pages available in user pool.
+NOT PALLOC
 INITS
 END INITS
 
@@ -22,6 +24,6 @@ Executing 'alarm-negative':
 Execution of 'alarm-negative' complete.
 Timer: 25 ticks
 Thread: 0 idle ticks, 25 kernel ticks, 0 user ticks
-Console: 472 characters output
+Console: 491 characters output
 Keyboard: 0 keys pressed
 Powering off...

@@ -107,6 +107,9 @@ struct thread
 
     /* Priority Donation Vars */
     int base_priority;                  /* Base Priority, non-donated */
+    struct list waitlock_list;          /* threads waiting for a lock this thread holds */
+    struct list_elem waitlockelem;      /* List element for lock wait list */
+    struct lock* waitlock;              /* The lock this thread is waiting for */
   };
 
 /* If false (default), use round-robin scheduler.
@@ -150,5 +153,15 @@ void thread_waitlist_process(void);
 
 bool priority_greater (const struct list_elem*, const struct list_elem*, void*);
 void check_preempt (void);
+
+void add_to_waitlist (struct thread* t);
+void update_release (struct lock* lock);
+void update_donations (struct thread* t);
+
+void donate_priority (void);
+
+void remove_with_lock(struct lock *lock);
+
+void refresh_priority (void);
 
 #endif /* threads/thread.h */
