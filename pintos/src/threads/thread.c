@@ -217,6 +217,10 @@ thread_create (const char *name, int priority,
   /* Add to run queue. */
   thread_unblock (t);
 
+  old_level = intr_disable();
+  check_preempt();
+  intr_set_level(old_level);
+
   return tid;
 }
 
@@ -247,8 +251,6 @@ thread_block (void)
 void
 thread_unblock (struct thread *t) 
 {
-  printf("entering thread unblock %s\n", thread_current()->name);
-
   enum intr_level old_level;
 
   ASSERT (is_thread (t));
@@ -256,22 +258,9 @@ thread_unblock (struct thread *t)
   old_level = intr_disable ();
   ASSERT (t->status == THREAD_BLOCKED);
   //list_push_back (&ready_list, &t->elem);
-  printf("attempting to insert to list\n");
   list_insert_ordered(&ready_list, &t->elem, &priority_greater, NULL);
   t->status = THREAD_READY;
   intr_set_level (old_level);
-
-  // Preempt
-  printf("trying to preempt\n");
-  
-  /*
-  if ( (thread_current()->priority < t->priority) && (thread_current() != idle_thread))
-  {
-    thread_yield();
-  }
-  */
-
-  printf("succeeded in preempt\n");
 }
 
 /* Returns the name of the running thread. */
@@ -370,7 +359,10 @@ thread_set_priority (int new_priority)
 {
   enum intr_level old_level = intr_disable();
   thread_current ()->priority = new_priority;
-  
+
+  check_preempt();
+
+  /*
   // Need to check Preempt
   if (!list_empty(&ready_list))
   {
@@ -378,6 +370,8 @@ thread_set_priority (int new_priority)
     if (new_priority < t->priority)
       thread_yield();
   }
+  */
+
   intr_set_level(old_level);
 }
 
@@ -433,9 +427,7 @@ idle (void *idle_started_ UNUSED)
 {
   struct semaphore *idle_started = idle_started_;
   idle_thread = thread_current ();
-  printf("IDLE THREAD SET\n");
   sema_up (idle_started);
-  printf("IDLE THREAD SEMA UP\n");
 
   for (;;) 
     {
@@ -669,4 +661,18 @@ bool priority_greater (const struct list_elem* a, const struct list_elem* b, voi
   struct thread* bT = list_entry(b, struct thread, elem);
 
   return aT->priority > bT->priority;
+}
+
+void check_preempt (void)
+{
+  if (list_empty(&ready_list)) return;
+
+  struct thread* max = list_entry(list_front(&ready_list), struct thread, elem);
+
+  if (thread_current()->priority < max->priority) {
+    if (intr_context())
+      intr_yield_on_return();
+    else 
+      thread_yield();
+  }
 }

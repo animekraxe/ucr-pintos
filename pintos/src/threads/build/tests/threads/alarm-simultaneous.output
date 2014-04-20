@@ -1,4 +1,4 @@
-qemu -hda /tmp/ateDrQwwyS.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/CQUCwBkvO_.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q run alarm-simultaneous
@@ -11,114 +11,16 @@ INITS
 END INITS
 
 B THREAD START
-entering thread unblock main
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-IDLE THREAD SET
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-IDLE THREAD SEMA UP
 
 END THREAD START
-Calibrating timer...  107,929,600 loops/s.
+Calibrating timer...  117,760,000 loops/s.
 Boot complete.
 Executing 'alarm-simultaneous':
 (alarm-simultaneous) begin
 (alarm-simultaneous) Creating 3 threads to sleep 5 times each.
 (alarm-simultaneous) Each thread sleeps 10 ticks each time.
 (alarm-simultaneous) Within an iteration, all threads should wake up on the same tick.
-entering thread unblock main
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock main
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock main
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-(alarm-simultaneous) iteration 0, thread 0: woke up after 11 ticks
+(alarm-simultaneous) iteration 0, thread 0: woke up after 10 ticks
 (alarm-simultaneous) iteration 0, thread 1: woke up 0 ticks later
 (alarm-simultaneous) iteration 0, thread 2: woke up 0 ticks later
 (alarm-simultaneous) iteration 1, thread 0: woke up 10 ticks later
@@ -135,8 +37,8 @@ succeeded in preempt
 (alarm-simultaneous) iteration 4, thread 2: woke up 0 ticks later
 (alarm-simultaneous) end
 Execution of 'alarm-simultaneous' complete.
-Timer: 283 ticks
-Thread: 250 idle ticks, 33 kernel ticks, 0 user ticks
-Console: 4042 characters output
+Timer: 280 ticks
+Thread: 250 idle ticks, 30 kernel ticks, 0 user ticks
+Console: 1678 characters output
 Keyboard: 0 keys pressed
 Powering off...

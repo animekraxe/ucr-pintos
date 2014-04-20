@@ -19,26 +19,10 @@ Differences in `diff -u' format:
 - (priority-donate-nest) Low thread should have priority 32.  Actual priority: 32.
 - (priority-donate-nest) Low thread should have priority 33.  Actual priority: 33.
 - (priority-donate-nest) Medium thread should have priority 33.  Actual priority: 33.
-+ entering thread unblock main
-+ attempting to insert to list
-+ trying to preempt
-+ succeeded in preempt
 + (priority-donate-nest) Low thread should have priority 32.  Actual priority: 31.
-+ entering thread unblock main
-+ attempting to insert to list
-+ trying to preempt
-+ succeeded in preempt
 + (priority-donate-nest) Low thread should have priority 33.  Actual priority: 31.
-+ entering thread unblock main
-+ attempting to insert to list
-+ trying to preempt
-+ succeeded in preempt
 + (priority-donate-nest) Medium thread should have priority 33.  Actual priority: 32.
   (priority-donate-nest) Medium thread got the lock.
-+ entering thread unblock medium
-+ attempting to insert to list
-+ trying to preempt
-+ succeeded in preempt
   (priority-donate-nest) High thread got the lock.
   (priority-donate-nest) High thread finished.
   (priority-donate-nest) High thread should have just finished.

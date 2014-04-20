@@ -1,4 +1,4 @@
-qemu -hda /tmp/1lzrlk_u5n.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/WysivTI5aw.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q run priority-preempt
@@ -11,32 +11,23 @@ INITS
 END INITS
 
 B THREAD START
-entering thread unblock main
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-IDLE THREAD SET
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-IDLE THREAD SEMA UP
 
 END THREAD START
-Calibrating timer...  111,206,400 loops/s.
+Calibrating timer...  117,760,000 loops/s.
 Boot complete.
 Executing 'priority-preempt':
 (priority-preempt) begin
-entering thread unblock main
-attempting to insert to list
-trying to preempt
-succeeded in preempt
+(priority-preempt) Thread high-priority iteration 0
+(priority-preempt) Thread high-priority iteration 1
+(priority-preempt) Thread high-priority iteration 2
+(priority-preempt) Thread high-priority iteration 3
+(priority-preempt) Thread high-priority iteration 4
+(priority-preempt) Thread high-priority done!
 (priority-preempt) The high-priority thread should have already completed.
 (priority-preempt) end
 Execution of 'priority-preempt' complete.
-Timer: 27 ticks
-Thread: 0 idle ticks, 27 kernel ticks, 0 user ticks
-Console: 862 characters output
+Timer: 26 ticks
+Thread: 0 idle ticks, 26 kernel ticks, 0 user ticks
+Console: 841 characters output
 Keyboard: 0 keys pressed
-
-TIMEOUT after 61 seconds of wall-clock time - load average: 0.24, 0.36, 0.42
+Powering off...

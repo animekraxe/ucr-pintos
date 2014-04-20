@@ -3,4 +3,3 @@ Constant subroutine SIGVTALRM redefined at /home/yuki/cs153/pintos/src/utils/pin
 Could not access KVM kernel module: No such file or directory
 failed to initialize KVM: No such file or directory
 Back to tcg accelerator.
-qemu: terminating on signal 2 from pid 16009

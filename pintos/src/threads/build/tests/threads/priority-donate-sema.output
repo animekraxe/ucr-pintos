@@ -1,4 +1,4 @@
-qemu -hda /tmp/OjkraYuAO0.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/uJI2sfTfIq.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q run priority-donate-sema
@@ -11,34 +11,19 @@ INITS
 END INITS
 
 B THREAD START
-entering thread unblock main
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-IDLE THREAD SET
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-IDLE THREAD SEMA UP
 
 END THREAD START
-Calibrating timer...  111,206,400 loops/s.
+Calibrating timer...  117,760,000 loops/s.
 Boot complete.
 Executing 'priority-donate-sema':
 (priority-donate-sema) begin
-entering thread unblock main
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock main
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-entering thread unblock main
-attempting to insert to list
-trying to preempt
-succeeded in preempt
+(priority-donate-sema) Thread L acquired lock.
+(priority-donate-sema) Thread M finished.
 (priority-donate-sema) Main thread finished.
-
-TIMEOUT after 61 seconds of wall-clock time - load average: 0.29, 0.39, 0.43
+(priority-donate-sema) end
+Execution of 'priority-donate-sema' complete.
+Timer: 26 ticks
+Thread: 0 idle ticks, 26 kernel ticks, 0 user ticks
+Console: 614 characters output
+Keyboard: 0 keys pressed
+Powering off...

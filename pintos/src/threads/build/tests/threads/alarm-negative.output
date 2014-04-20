@@ -1,4 +1,4 @@
-qemu -hda /tmp/_9lwPuVLsq.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/FobK_2TbWV.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q run alarm-negative
@@ -11,27 +11,17 @@ INITS
 END INITS
 
 B THREAD START
-entering thread unblock main
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-IDLE THREAD SET
-entering thread unblock idle
-attempting to insert to list
-trying to preempt
-succeeded in preempt
-IDLE THREAD SEMA UP
 
 END THREAD START
-Calibrating timer...  111,206,400 loops/s.
+Calibrating timer...  117,760,000 loops/s.
 Boot complete.
 Executing 'alarm-negative':
 (alarm-negative) begin
 (alarm-negative) PASS
 (alarm-negative) end
 Execution of 'alarm-negative' complete.
-Timer: 26 ticks
-Thread: 0 idle ticks, 27 kernel ticks, 0 user ticks
-Console: 702 characters output
+Timer: 25 ticks
+Thread: 0 idle ticks, 25 kernel ticks, 0 user ticks
+Console: 472 characters output
 Keyboard: 0 keys pressed
 Powering off...

@@ -104,6 +104,9 @@ struct thread
     /* New Variables... */
     unsigned sleepTicks;                /* How long the thread has left to sleep. Awake if 0*/
     struct list_elem sleepelem;         /* List element for thread wait list  */
+
+    /* Priority Donation Vars */
+    int base_priority;                  /* Base Priority, non-donated */
   };
 
 /* If false (default), use round-robin scheduler.
@@ -146,5 +149,6 @@ void thread_waitlist_push(void);
 void thread_waitlist_process(void);
 
 bool priority_greater (const struct list_elem*, const struct list_elem*, void*);
+void check_preempt (void);
 
 #endif /* threads/thread.h */
