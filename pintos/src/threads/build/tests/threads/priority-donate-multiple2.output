@@ -1,23 +1,53 @@
-qemu -hda /tmp/7P50uxco8F.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/P3x02GCOt5.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
-Loading........
+Loading.........
 Kernel command line: -q run priority-donate-multiple2
+
+THREAD INIT
 Pintos booting with 4,096 kB RAM...
 383 pages available in kernel pool.
 383 pages available in user pool.
-Calibrating timer...  104,755,200 loops/s.
+INITS
+END INITS
+
+B THREAD START
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+IDLE THREAD SET
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+IDLE THREAD SEMA UP
+
+END THREAD START
+Calibrating timer...  107,110,400 loops/s.
 Boot complete.
 Executing 'priority-donate-multiple2':
 (priority-donate-multiple2) begin
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
 (priority-donate-multiple2) Main thread should have priority 34.  Actual priority: 31.
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
 (priority-donate-multiple2) Main thread should have priority 36.  Actual priority: 31.
 (priority-donate-multiple2) Main thread should have priority 36.  Actual priority: 31.
 (priority-donate-multiple2) Threads b, a, c should have just finished, in that order.
 (priority-donate-multiple2) Main thread should have priority 31.  Actual priority: 31.
 (priority-donate-multiple2) end
 Execution of 'priority-donate-multiple2' complete.
-Timer: 22 ticks
-Thread: 0 idle ticks, 22 kernel ticks, 0 user ticks
-Console: 876 characters output
+Timer: 31 ticks
+Thread: 0 idle ticks, 31 kernel ticks, 0 user ticks
+Console: 1460 characters output
 Keyboard: 0 keys pressed
 Powering off...

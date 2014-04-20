@@ -1,19 +1,37 @@
-qemu -hda /tmp/snxxs4vi35.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/rm5JnKs4Zw.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
-Loading........
+Loading.........
 Kernel command line: -q run alarm-zero
+
+THREAD INIT
 Pintos booting with 4,096 kB RAM...
 383 pages available in kernel pool.
 383 pages available in user pool.
-Calibrating timer...  104,755,200 loops/s.
+INITS
+END INITS
+
+B THREAD START
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+IDLE THREAD SET
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+IDLE THREAD SEMA UP
+
+END THREAD START
+Calibrating timer...  111,206,400 loops/s.
 Boot complete.
 Executing 'alarm-zero':
 (alarm-zero) begin
 (alarm-zero) PASS
 (alarm-zero) end
 Execution of 'alarm-zero' complete.
-Timer: 21 ticks
-Thread: 1 idle ticks, 20 kernel ticks, 0 user ticks
-Console: 385 characters output
+Timer: 27 ticks
+Thread: 0 idle ticks, 28 kernel ticks, 0 user ticks
+Console: 678 characters output
 Keyboard: 0 keys pressed
 Powering off...

@@ -24,7 +24,19 @@ Differences in `diff -u' format:
 - (priority-donate-multiple2) Thread a acquired lock a.
 - (priority-donate-multiple2) Thread a finished.
 - (priority-donate-multiple2) Thread c finished.
++ entering thread unblock main
++ attempting to insert to list
++ trying to preempt
++ succeeded in preempt
 + (priority-donate-multiple2) Main thread should have priority 34.  Actual priority: 31.
++ entering thread unblock main
++ attempting to insert to list
++ trying to preempt
++ succeeded in preempt
++ entering thread unblock main
++ attempting to insert to list
++ trying to preempt
++ succeeded in preempt
 + (priority-donate-multiple2) Main thread should have priority 36.  Actual priority: 31.
 + (priority-donate-multiple2) Main thread should have priority 36.  Actual priority: 31.
   (priority-donate-multiple2) Threads b, a, c should have just finished, in that order.

@@ -14,12 +14,20 @@ Acceptable output:
 Differences in `diff -u' format:
   (priority-donate-lower) begin
 - (priority-donate-lower) Main thread should have priority 41.  Actual priority: 41.
++ entering thread unblock main
++ attempting to insert to list
++ trying to preempt
++ succeeded in preempt
 + (priority-donate-lower) Main thread should have priority 41.  Actual priority: 31.
   (priority-donate-lower) Lowering base priority...
 - (priority-donate-lower) Main thread should have priority 41.  Actual priority: 41.
 - (priority-donate-lower) acquire: got the lock
 - (priority-donate-lower) acquire: done
 + (priority-donate-lower) Main thread should have priority 41.  Actual priority: 21.
++ entering thread unblock main
++ attempting to insert to list
++ trying to preempt
++ succeeded in preempt
   (priority-donate-lower) acquire must already have finished.
   (priority-donate-lower) Main thread should have priority 21.  Actual priority: 21.
   (priority-donate-lower) end

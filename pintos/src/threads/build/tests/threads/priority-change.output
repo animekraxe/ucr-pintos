@@ -1,21 +1,45 @@
-qemu -hda /tmp/rnKDIN2q4t.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/FSdlo0IPEs.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
-Loading........
+Loading.........
 Kernel command line: -q run priority-change
+
+THREAD INIT
 Pintos booting with 4,096 kB RAM...
 383 pages available in kernel pool.
 383 pages available in user pool.
-Calibrating timer...  104,755,200 loops/s.
+INITS
+END INITS
+
+B THREAD START
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+IDLE THREAD SET
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+IDLE THREAD SEMA UP
+
+END THREAD START
+Calibrating timer...  107,929,600 loops/s.
 Boot complete.
 Executing 'priority-change':
 (priority-change) begin
 (priority-change) Creating a high-priority thread 2.
+entering thread unblock main
+attempting to insert to list
+(priority-change) Thread 2 now lowering priority.
+trying to preempt
+succeeded in preempt
 (priority-change) Thread 2 should have just lowered its priority.
+(priority-change) Thread 2 exiting.
 (priority-change) Thread 2 should have just exited.
 (priority-change) end
 Execution of 'priority-change' complete.
-Timer: 21 ticks
-Thread: 0 idle ticks, 21 kernel ticks, 0 user ticks
-Console: 563 characters output
+Timer: 29 ticks
+Thread: 0 idle ticks, 29 kernel ticks, 0 user ticks
+Console: 1039 characters output
 Keyboard: 0 keys pressed
 Powering off...

@@ -1,22 +1,52 @@
-qemu -hda /tmp/FzKgv1dU1w.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/h_Kz1p9si4.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
-Loading........
+Loading.........
 Kernel command line: -q run priority-donate-one
+
+THREAD INIT
 Pintos booting with 4,096 kB RAM...
 383 pages available in kernel pool.
 383 pages available in user pool.
-Calibrating timer...  104,755,200 loops/s.
+INITS
+END INITS
+
+B THREAD START
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+IDLE THREAD SET
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+IDLE THREAD SEMA UP
+
+END THREAD START
+Calibrating timer...  107,929,600 loops/s.
 Boot complete.
 Executing 'priority-donate-one':
 (priority-donate-one) begin
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
 (priority-donate-one) This thread should have priority 32.  Actual priority: 31.
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
 (priority-donate-one) This thread should have priority 33.  Actual priority: 31.
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
 (priority-donate-one) acquire2, acquire1 must already have finished, in that order.
 (priority-donate-one) This should be the last line before finishing this test.
 (priority-donate-one) end
 Execution of 'priority-donate-one' complete.
-Timer: 21 ticks
-Thread: 0 idle ticks, 21 kernel ticks, 0 user ticks
-Console: 737 characters output
+Timer: 30 ticks
+Thread: 0 idle ticks, 30 kernel ticks, 0 user ticks
+Console: 1321 characters output
 Keyboard: 0 keys pressed
 Powering off...

@@ -1,13 +1,37 @@
-qemu -hda /tmp/bkhDce1viS.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/_9lwPuVLsq.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
-Loading........
+Loading.........
 Kernel command line: -q run alarm-negative
+
+THREAD INIT
 Pintos booting with 4,096 kB RAM...
 383 pages available in kernel pool.
 383 pages available in user pool.
-Calibrating timer...  104,755,200 loops/s.
+INITS
+END INITS
+
+B THREAD START
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+IDLE THREAD SET
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+IDLE THREAD SEMA UP
+
+END THREAD START
+Calibrating timer...  111,206,400 loops/s.
 Boot complete.
 Executing 'alarm-negative':
 (alarm-negative) begin
-
-TIMEOUT after 61 seconds of wall-clock time - load average: 0.59, 0.70, 0.69
+(alarm-negative) PASS
+(alarm-negative) end
+Execution of 'alarm-negative' complete.
+Timer: 26 ticks
+Thread: 0 idle ticks, 27 kernel ticks, 0 user ticks
+Console: 702 characters output
+Keyboard: 0 keys pressed
+Powering off...

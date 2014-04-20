@@ -1,28 +1,135 @@
-qemu -hda /tmp/NWrdYSDpSc.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/A9E5UJ5J9D.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
-Loading........
+Loading.........
 Kernel command line: -q run priority-sema
+
+THREAD INIT
 Pintos booting with 4,096 kB RAM...
 383 pages available in kernel pool.
 383 pages available in user pool.
-Calibrating timer...  104,755,200 loops/s.
+INITS
+END INITS
+
+B THREAD START
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+IDLE THREAD SET
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+IDLE THREAD SEMA UP
+
+END THREAD START
+Calibrating timer...  107,929,600 loops/s.
 Boot complete.
 Executing 'priority-sema':
 (priority-sema) begin
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+(priority-sema) Thread priority 30 woke up.
 (priority-sema) Back in main thread.
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
 (priority-sema) Back in main thread.
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
 (priority-sema) Back in main thread.
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
 (priority-sema) Back in main thread.
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
 (priority-sema) Back in main thread.
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
 (priority-sema) Back in main thread.
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
 (priority-sema) Back in main thread.
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
 (priority-sema) Back in main thread.
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+(priority-sema) Thread priority 29 woke up.
+(priority-sema) Thread priority 28 woke up.
+(priority-sema) Thread priority 27 woke up.
+(priority-sema) Thread priority 26 woke up.
+(priority-sema) Thread priority 25 woke up.
+(priority-sema) Thread priority 24 woke up.
+(priority-sema) Thread priority 23 woke up.
+(priority-sema) Thread priority 22 woke up.
 (priority-sema) Back in main thread.
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
 (priority-sema) Back in main thread.
 (priority-sema) end
 Execution of 'priority-sema' complete.
-Timer: 21 ticks
-Thread: 0 idle ticks, 22 kernel ticks, 0 user ticks
-Console: 752 characters output
+Timer: 38 ticks
+Thread: 0 idle ticks, 38 kernel ticks, 0 user ticks
+Console: 3381 characters output
 Keyboard: 0 keys pressed
 Powering off...

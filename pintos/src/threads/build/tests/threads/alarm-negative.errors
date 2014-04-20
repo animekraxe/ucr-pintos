@@ -1,2 +1,5 @@
-Could not open option rom 'sgabios.bin': No such file or directory
-qemu: terminating on signal 2 from pid 4014
+Prototype mismatch: sub main::SIGVTALRM () vs none at /home/yuki/cs153/pintos/src/utils/pintos line 935.
+Constant subroutine SIGVTALRM redefined at /home/yuki/cs153/pintos/src/utils/pintos line 927.
+Could not access KVM kernel module: No such file or directory
+failed to initialize KVM: No such file or directory
+Back to tcg accelerator.

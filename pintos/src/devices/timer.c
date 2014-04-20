@@ -91,12 +91,14 @@ timer_sleep (int64_t ticks)
 {
   ASSERT (intr_get_level () == INTR_ON);
 
-  //Set num ticks to sleep
-  struct thread * current = thread_current();
-  current->sleepTicks = ticks;
+  if (ticks <= 0) return;
 
   //Disable interrupts to block thread
   enum intr_level old_level = intr_disable();
+
+  //Set num ticks to sleep
+  struct thread * current = thread_current();
+  current->sleepTicks = ticks;
 
   thread_waitlist_push();
   thread_block();
@@ -174,7 +176,7 @@ timer_print_stats (void)
 {
   printf ("Timer: %"PRId64" ticks\n", timer_ticks ());
 }
-
+
 /* Timer interrupt handler. */
 static void
 timer_interrupt (struct intr_frame *args UNUSED)

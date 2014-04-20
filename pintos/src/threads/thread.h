@@ -103,6 +103,7 @@ struct thread
     
     /* New Variables... */
     unsigned sleepTicks;                /* How long the thread has left to sleep. Awake if 0*/
+    struct list_elem sleepelem;         /* List element for thread wait list  */
   };
 
 /* If false (default), use round-robin scheduler.
@@ -143,5 +144,7 @@ int thread_get_load_avg (void);
 
 void thread_waitlist_push(void);
 void thread_waitlist_process(void);
+
+bool priority_greater (const struct list_elem*, const struct list_elem*, void*);
 
 #endif /* threads/thread.h */

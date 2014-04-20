@@ -1,11 +1,29 @@
-qemu -hda /tmp/dlnHLE5tDm.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/QD72I7Ho3_.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
-Loading........
+Loading.........
 Kernel command line: -q run alarm-multiple
+
+THREAD INIT
 Pintos booting with 4,096 kB RAM...
 383 pages available in kernel pool.
 383 pages available in user pool.
-Calibrating timer...  104,755,200 loops/s.
+INITS
+END INITS
+
+B THREAD START
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+IDLE THREAD SET
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+IDLE THREAD SEMA UP
+
+END THREAD START
+Calibrating timer...  107,929,600 loops/s.
 Boot complete.
 Executing 'alarm-multiple':
 (alarm-multiple) begin
@@ -14,6 +32,170 @@ Executing 'alarm-multiple':
 (alarm-multiple) thread 1 sleeps 20 ticks each time, and so on.
 (alarm-multiple) If successful, product of iteration count and
 (alarm-multiple) sleep duration will appear in nondescending order.
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock main
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
+entering thread unblock idle
+attempting to insert to list
+trying to preempt
+succeeded in preempt
 (alarm-multiple) thread 0: duration=10, iteration=1, product=10
 (alarm-multiple) thread 1: duration=20, iteration=1, product=20
 (alarm-multiple) thread 0: duration=10, iteration=2, product=20
@@ -51,8 +233,8 @@ Executing 'alarm-multiple':
 (alarm-multiple) thread 4: duration=50, iteration=7, product=350
 (alarm-multiple) end
 Execution of 'alarm-multiple' complete.
-Timer: 577 ticks
-Thread: 550 idle ticks, 27 kernel ticks, 0 user ticks
-Console: 2955 characters output
+Timer: 588 ticks
+Thread: 550 idle ticks, 38 kernel ticks, 0 user ticks
+Console: 7225 characters output
 Keyboard: 0 keys pressed
 Powering off...
