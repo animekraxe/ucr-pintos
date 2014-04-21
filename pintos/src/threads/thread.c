@@ -213,6 +213,7 @@ thread_create (const char *name, int priority,
   /* Add to run queue. */
   thread_unblock (t);
 
+  //Need to disable interrupts...
   old_level = intr_disable();
   check_preempt();
   intr_set_level(old_level);
@@ -618,6 +619,7 @@ void thread_waitlist_push ()
     list_push_back(&wait_list, &current->sleepelem);
 }
 
+// Decrements sleep counter in sleep list and unblocks at 0
 void thread_waitlist_process ()
 {
   struct list_elem *e;
@@ -637,6 +639,7 @@ void thread_waitlist_process ()
   }
 }
 
+// Strictly greater so that threads of equal priority do not yield to each other 
 bool priority_greater (const struct list_elem* a, const struct list_elem* b, void* aux)
 {
   struct thread* aT = list_entry(a, struct thread, elem);
@@ -645,6 +648,7 @@ bool priority_greater (const struct list_elem* a, const struct list_elem* b, voi
   return aT->priority > bT->priority;
 }
 
+// Tests for preempt from new highest priority thread and yields if necessary
 void check_preempt (void)
 {
   if (list_empty(&ready_list)) return;
@@ -666,6 +670,7 @@ void add_to_waitlist (struct thread* t)
                       &priority_greater, NULL);
 }
 
+/* Removes all threads waiting on lock from waitlock_list */
 void update_release (struct lock* lock)
 {
   struct list_elem* e;
@@ -681,8 +686,10 @@ void update_release (struct lock* lock)
     }
 }
 
+/* Recursively propogates nested priority donations. Also fixes out of order threads */
 void update_donations (struct thread* t)
 {
+  // First reset to base so you know if you need to update after
   t->priority = t->base_priority;
 
   if (list_empty(&t->waitlock_list)) return;
@@ -705,6 +712,7 @@ void update_donations (struct thread* t)
   if (max->priority > t->priority)
     t->priority = max->priority;
 
+  // Propogate recursively
   if (t->waitlock != NULL)
     update_donations(t->waitlock->holder);
 }

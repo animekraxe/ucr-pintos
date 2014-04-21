@@ -148,6 +148,7 @@ void thread_set_nice (int);
 int thread_get_recent_cpu (void);
 int thread_get_load_avg (void);
 
+/* New Added Functions */
 void thread_waitlist_push(void);
 void thread_waitlist_process(void);
 
