@@ -115,9 +115,14 @@ sema_up (struct semaphore *sema)
 
   old_level = intr_disable ();
   
-  if (!list_empty (&sema->waiters)) 
+  if (!list_empty (&sema->waiters))
+  {
+    //For case priority-donate-sema... need to update sema->waiters just in case
+    //priorities have changed
+    list_sort(&sema->waiters, &priority_greater, NULL); 
     thread_unblock (list_entry (list_pop_front (&sema->waiters),
                                 struct thread, elem));
+  }
 
   sema->value++;
 
@@ -310,6 +315,28 @@ cond_init (struct condition *cond)
    interrupt handler.  This function may be called with
    interrupts disabled, but interrupts will be turned back on if
    we need to sleep. */
+
+bool priority_greater_sema (const struct list_elem* a, const struct list_elem* b, void* aux)
+{
+  struct semaphore_elem* aS = list_entry(a, struct semaphore_elem, elem);
+  struct semaphore_elem* bS = list_entry(b, struct semaphore_elem, elem);
+
+  int a_max_priority, b_max_priority;
+
+  //If list_empty then its "priority" is effectively less than 0. Any existing elem is > it;
+  if (list_empty(&aS->semaphore.waiters)) 
+    a_max_priority = -1;
+  else 
+    a_max_priority = list_entry(list_front(&aS->semaphore.waiters), struct thread, elem)->priority;
+
+  if (list_empty(&bS->semaphore.waiters)) 
+    b_max_priority = -1;
+  else 
+    b_max_priority = list_entry(list_front(&bS->semaphore.waiters), struct thread, elem)->priority;
+  
+  return a_max_priority > b_max_priority;
+}
+
 void
 cond_wait (struct condition *cond, struct lock *lock) 
 {
@@ -321,8 +348,7 @@ cond_wait (struct condition *cond, struct lock *lock)
   ASSERT (lock_held_by_current_thread (lock));
   
   sema_init (&waiter.semaphore, 0);
-  //list_push_back (&cond->waiters, &waiter.elem);
-  list_insert_ordered(&cond->waiters, &waiter.elem, &priority_greater, NULL);
+  list_insert_ordered(&cond->waiters, &waiter.elem, &priority_greater_sema, NULL);
   lock_release (lock);
   sema_down (&waiter.semaphore);
   lock_acquire (lock);
@@ -344,8 +370,12 @@ cond_signal (struct condition *cond, struct lock *lock UNUSED)
   ASSERT (lock_held_by_current_thread (lock));
 
   if (!list_empty (&cond->waiters)) 
+  {
+    //Sort to grab next highest priority from front
+    list_sort(&cond->waiters, &priority_greater_sema, NULL);
     sema_up (&list_entry (list_pop_front (&cond->waiters),
                           struct semaphore_elem, elem)->semaphore);
+  }
 }
 
 /* Wakes up all threads, if any, waiting on COND (protected by
