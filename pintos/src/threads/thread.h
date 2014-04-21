@@ -158,10 +158,4 @@ void add_to_waitlist (struct thread* t);
 void update_release (struct lock* lock);
 void update_donations (struct thread* t);
 
-void donate_priority (void);
-
-void remove_with_lock(struct lock *lock);
-
-void refresh_priority (void);
-
 #endif /* threads/thread.h */

@@ -95,9 +95,7 @@ main (void)
           init_ram_pages * PGSIZE / 1024);
 
   /* Initialize memory system. */
-  printf("PALLOC?\n");
   palloc_init (user_page_limit);
-  printf("NOT PALLOC\n");
   malloc_init ();
   paging_init ();
 
@@ -107,7 +105,6 @@ main (void)
   gdt_init ();
 #endif
 
-  printf("INITS\n");
   /* Initialize interrupt handlers. */
   intr_init ();
   timer_init ();
@@ -118,12 +115,9 @@ main (void)
   syscall_init ();
 #endif
 
-  printf("END INITS\n");
 
   /* Start thread scheduler and enable interrupts. */
-  printf("\nB THREAD START\n");
   thread_start ();
-  printf("\nEND THREAD START\n");
   serial_init_queue ();
   timer_calibrate ();
 

@@ -97,8 +97,6 @@ thread_init (void)
   list_init (&wait_list);
   list_init (&all_list);
   
-  printf("\nTHREAD INIT\n");
-
   /* Set up a thread structure for the running thread. */
   initial_thread = running_thread ();
   init_thread (initial_thread, "main", PRI_DEFAULT);
@@ -255,7 +253,6 @@ thread_unblock (struct thread *t)
 
   old_level = intr_disable ();
   ASSERT (t->status == THREAD_BLOCKED);
-  //list_push_back (&ready_list, &t->elem);
   list_insert_ordered(&ready_list, &t->elem, &priority_greater, NULL);
   t->status = THREAD_READY;
   intr_set_level (old_level);
@@ -328,7 +325,6 @@ thread_yield (void)
   old_level = intr_disable ();
   if (cur != idle_thread) 
     list_insert_ordered(&ready_list, &cur->elem, &priority_greater, NULL);
-    //list_push_back (&ready_list, &cur->elem);
   cur->status = THREAD_READY;
   schedule ();
   intr_set_level (old_level);
@@ -360,26 +356,6 @@ thread_set_priority (int new_priority)
   struct thread* current = thread_current();
   current->base_priority = new_priority;
   update_donations(current);
-
-  //current->base_priority = new_priority;
-  //if(new_priority > current->priority)
-  //  current->priority = new_priority;
-
-  /*
-    int old_priority = thread_current()->priority;
-  thread_current ()->base_priority = new_priority;
-  refresh_priority();
-  // If new priority is greater, donate it
-  if (old_priority < thread_current()->priority)
-    {
-      donate_priority();
-    }
-  // If new priority is less, test if the processor should be yielded
-  if (old_priority > thread_current()->priority)
-    {
-        check_preempt();
-    }
-*/
 
   check_preempt();
 
@@ -650,26 +626,14 @@ void thread_waitlist_process ()
   {
       struct thread *t = list_entry (e, struct thread, sleepelem);
 
-      if (t->sleepTicks-- > 1) {
+      if (t->sleepTicks > 1) {
+        t->sleepTicks -= 1;
         e = list_next(e);
       } else {
         t->sleepTicks = 0;
         e = list_remove(e);
         thread_unblock(t);
       }
-
-
-      /*
-      //Decrement sleepTick
-      if (t->sleepTicks > 0) 
-          t->sleepTicks -= 1;
-      
-      //Remove from waitlist and push back to ready list if sleepTick is 0  
-      if (t->sleepTicks == 0) {
-        e = list_remove(&t->sleepelem)->prev; 
-        thread_unblock(t);
-      }
-      */
   }
 }
 
@@ -693,16 +657,7 @@ void check_preempt (void)
     else 
       thread_yield();
   }
-
-/*
-
-  if (intr_context())
-    if (thread_ticks >= TIME_SLICE && thread_current()->priority == max->priority)
-      intr_yield_on_return();
-      */
 }
-
-
 
 void add_to_waitlist (struct thread* t)
 {
@@ -713,10 +668,9 @@ void add_to_waitlist (struct thread* t)
 
 void update_release (struct lock* lock)
 {
-  //struct list_elem* e;
-  //struct thread* current = thread_current();
+  struct list_elem* e;
+  struct thread* current = thread_current();
 
-  /*
   for (e = list_begin (&current->waitlock_list); 
        e != list_end (&current->waitlock_list);
        e = list_next (e))
@@ -725,20 +679,6 @@ void update_release (struct lock* lock)
       if (t->waitlock == lock)
         e = list_remove(&t->waitlockelem)->prev;
     }
-    */
-
-  struct list_elem *e = list_begin(&thread_current()->waitlock_list);
-  struct list_elem *next;
-  while (e != list_end(&thread_current()->waitlock_list))
-  {
-      struct thread *t = list_entry(e, struct thread, waitlockelem);
-      next = list_next(e);
-      if (t->waitlock == lock)
-      {
-       list_remove(e);
-      }
-      e = next;
-  }
 }
 
 void update_donations (struct thread* t)
@@ -747,12 +687,11 @@ void update_donations (struct thread* t)
 
   if (list_empty(&t->waitlock_list)) return;
 
-  //list_sort(&t->waitlock_list, &priority_greater, NULL);
-  //struct thread* max = list_entry(list_front(&t->waitlock_list), struct thread, waitlockelem);
   struct list_elem* frontE = list_front(&t->waitlock_list);
   struct list_elem* maxE = list_max(&t->waitlock_list, &priority_greater, NULL);
 
-  //List is out of order
+  //List is out of order because one thread has a new priority
+  //Remove and re-insert the out of place thread
   if (frontE != maxE) {
     struct thread* max = list_entry(maxE, struct thread, waitlockelem);
     list_remove(maxE);
@@ -768,61 +707,4 @@ void update_donations (struct thread* t)
 
   if (t->waitlock != NULL)
     update_donations(t->waitlock->holder);
-}
-
-#define DEPTH_LIMIT 8
-
-void donate_priority (void)
-{
-  int depth = 0;
-  struct thread *t = thread_current();
-  struct lock *l = t->waitlock;
-  while (l && depth < DEPTH_LIMIT)
-    {
-      depth++;
-      // If lock is not being held, return
-      if (!l->holder)
-  {
-    return;
-  }
-      if (l->holder->priority >= t->priority)
-  {
-    return;
-  }
-      l->holder->priority = t->priority;
-      t = l->holder;
-      l = t->waitlock;
-    }
-}
-
-void remove_with_lock(struct lock *lock)
-{
-  struct list_elem *e = list_begin(&thread_current()->waitlock_list);
-  struct list_elem *next;
-  while (e != list_end(&thread_current()->waitlock_list))
-    {
-      struct thread *t = list_entry(e, struct thread, waitlockelem);
-      next = list_next(e);
-      if (t->waitlock == lock)
-  {
-    list_remove(e);
-  }
-      e = next;
-    }
-}
-
-void refresh_priority (void)
-{
-  struct thread *t = thread_current();
-  t->priority = t->base_priority;
-  if (list_empty(&t->waitlock_list))
-    {
-      return;
-    }
-  struct thread *s = list_entry(list_front(&t->waitlock_list),
-        struct thread, waitlockelem);
-  if (s->priority > t->priority)
-    {
-      t->priority = s->priority;
-    }
 }
