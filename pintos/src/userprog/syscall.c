@@ -13,8 +13,13 @@ syscall_init (void)
 }
 
 static void
-syscall_handler (struct intr_frame *f UNUSED) 
+syscall_handler (struct intr_frame *f) 
 {
+  int MAX_ARGS = 3;
+  int arg[MAX_ARGS];
+
+
+
   printf ("system call!\n");
   thread_exit ();
 }
