@@ -125,6 +125,7 @@ sema_up (struct semaphore *sema)
 
   sema->value++;
 
+  //Check that unblocked thread needs yield
   if(!intr_context()) check_preempt();
 
   intr_set_level (old_level);
@@ -308,6 +309,7 @@ cond_init (struct condition *cond)
    interrupts disabled, but interrupts will be turned back on if
    we need to sleep. */
 
+//Need different comparison function for semas apparently.
 bool priority_greater_sema (const struct list_elem* a, const struct list_elem* b, void* aux)
 {
   struct semaphore_elem* aS = list_entry(a, struct semaphore_elem, elem);
