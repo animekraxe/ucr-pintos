@@ -202,7 +202,7 @@ struct Elf32_Phdr
 #define PF_R 4          /* Readable. */
 
 //static bool setup_stack (void **esp);
-static bool setup_stack (void** esp, const char* file_name, char** save_ptr);
+static bool setup_stack (void** esp, char* file_name, char** save_ptr);
 static bool validate_segment (const struct Elf32_Phdr *, struct file *);
 static bool load_segment (struct file *file, off_t ofs, uint8_t *upage,
                           uint32_t read_bytes, uint32_t zero_bytes,
@@ -309,7 +309,7 @@ load (const char *file_name, void (**eip) (void), void **esp, char** save_ptr)
     }
 
   /* Set up stack. */
-  if (!setup_stack (esp, file_name, save_ptr))
+  if (!setup_stack (esp, (char *)file_name, save_ptr))
     goto done;
 
   /* Start address. */
@@ -431,10 +431,13 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
   return true;
 }
 
+#define WORD_SIZE 4
+#define DEFAULT_ARGV 2
+
 /* Create a minimal stack by mapping a zeroed page at the top of
    user virtual memory. */
 static bool
-setup_stack (void **esp, const char* file_name, char** save_ptr)
+setup_stack (void **esp, char* file_name, char** save_ptr)
 {
   uint8_t *kpage;
   bool success = false;
@@ -443,28 +446,58 @@ setup_stack (void **esp, const char* file_name, char** save_ptr)
   if (kpage != NULL) 
     {
       success = install_page (((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
-      if (success) {
-        *esp = PHYS_BASE - 12; //TEMPORARY FIX?...???
-        //*esp = PHYS_BASE;
+      if (success) { 
+        //*esp = PHYS_BASE - 12; //TEMPORARY FIX?...???
+        *esp = PHYS_BASE;
     
-        const int ARGLIMIT = 20;
-        char** args = malloc(ARGLIMIT * sizeof(char*));
-        int i = 0, argc = 0;
-        char* token = NULL;
-        while ( (token = strtok_r(NULL, " ", save_ptr)) != NULL )
-        {
-            arguments[i] = token;
-            ++i;
-        }
-        
-        void* stack = esp;
-        
-         
-     
+
       }
       else
         palloc_free_page (kpage);
     }
+
+          const int ARGLIMIT = 30;
+        char** args = malloc(ARGLIMIT * sizeof(char*));
+        int i = 0, argc = 0;
+        char* token = file_name;
+
+        while (token) {
+          *esp -= strlen(token) + 1;
+          memcpy(*esp, token, strlen(token) + 1);
+          args[argc] = *esp;
+          ++argc;
+          token = strtok_r(NULL, " ", save_ptr);
+        }
+        args[argc] = NULL; 
+
+        i = (uint8_t) *esp % 4;
+        if (i != 0) {
+          *esp -= i;
+          memcpy(*esp, &args[argc], i);
+          //memcpy(*esp, NULL, sizeof(void*));
+        }
+               
+        for (i = argc; i >= 0; --i) {
+        //for (i = 0; i < argc; ++i) {
+          *esp -= sizeof(char*);
+          memcpy(*esp, &args[i], sizeof(char*));
+        }
+
+        char* argv = *esp;
+        *esp -= sizeof(char**);
+        memcpy(*esp, &argv, sizeof(char**));
+
+        *esp -= sizeof(int);
+        memcpy(*esp, &argc, sizeof(int));
+
+        *esp -= sizeof(void*);
+        memcpy(*esp, &args[argc], sizeof(void*));
+        //memcpy(*esp, NULL, sizeof(void*));
+
+        free(args);
+
+        hex_dump(0, *esp, (int) ((size_t) PHYS_BASE - (size_t) *esp), true); 
+
   return success;
 }
 
