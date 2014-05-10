@@ -17,6 +17,7 @@
 #include "threads/palloc.h"
 #include "threads/thread.h"
 #include "threads/vaddr.h"
+#include "threads/malloc.h"
 
 static thread_func start_process NO_RETURN;
 //static bool load (const char *cmdline, void (**eip) (void), void **esp);
@@ -446,21 +447,24 @@ setup_stack (void **esp, char* file_name, char** save_ptr)
   if (kpage != NULL) 
     {
       success = install_page (((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
-      if (success) { 
-        //*esp = PHYS_BASE - 12; //TEMPORARY FIX?...???
+      if (success) 
+      { 
         *esp = PHYS_BASE;
-    
-
       }
       else
+      {
         palloc_free_page (kpage);
+        return success;
+      }
     }
 
-          const int ARGLIMIT = 30;
+        const int ARGLIMIT = 30;
         char** args = malloc(ARGLIMIT * sizeof(char*));
+        //char* args [ARGLIMIT];
         int i = 0, argc = 0;
-        char* token = file_name;
-
+        //char* token = file_name;
+        char* token;
+/*
         while (token) {
           *esp -= strlen(token) + 1;
           memcpy(*esp, token, strlen(token) + 1);
@@ -468,10 +472,21 @@ setup_stack (void **esp, char* file_name, char** save_ptr)
           ++argc;
           token = strtok_r(NULL, " ", save_ptr);
         }
-        args[argc] = NULL; 
+*/
+        for (token = (char*) file_name; token != NULL;
+            token = strtok_r(NULL, " ", save_ptr))
+        {
+            *esp -= strlen(token) + 1;
+            args[argc] = *esp;
+            argc++;
 
-        i = (uint8_t) *esp % 4;
-        if (i != 0) {
+            memcpy(*esp, token, strlen(token) + 1);
+        }
+
+        args[argc] = 0; 
+
+        i = (size_t) *esp % 4;
+        if (i) {
           *esp -= i;
           memcpy(*esp, &args[argc], i);
           //memcpy(*esp, NULL, sizeof(void*));
