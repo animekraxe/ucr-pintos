@@ -100,16 +100,6 @@ struct thread
 
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
-    
-    /* New Variables... */
-    unsigned sleepTicks;                /* How long the thread has left to sleep. Awake if 0*/
-    struct list_elem sleepelem;         /* List element for thread wait list  */
-
-    /* Priority Donation Vars */
-    int base_priority;                  /* Base Priority, non-donated */
-    struct list waitlock_list;          /* threads waiting for a lock this thread holds */
-    struct list_elem waitlockelem;      /* List element for lock wait list */
-    struct lock* waitlock;              /* The lock this thread is waiting for */
   };
 
 /* If false (default), use round-robin scheduler.
@@ -148,15 +138,7 @@ void thread_set_nice (int);
 int thread_get_recent_cpu (void);
 int thread_get_load_avg (void);
 
-/* New Added Functions */
-void thread_waitlist_push(void);
-void thread_waitlist_process(void);
-
-bool priority_greater (const struct list_elem*, const struct list_elem*, void*);
-void check_preempt (void);
-
-void add_to_waitlist (struct thread* t);
-void update_release (struct lock* lock);
-void update_donations (struct thread* t);
+enum thread_status get_thread_status (tid_t tid);
+struct thread* get_thread (tid_t tid);
 
 #endif /* threads/thread.h */

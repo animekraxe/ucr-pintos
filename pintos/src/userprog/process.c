@@ -18,6 +18,7 @@
 #include "threads/thread.h"
 #include "threads/vaddr.h"
 #include "threads/malloc.h"
+#include "threads/synch.h"
 
 static thread_func start_process NO_RETURN;
 //static bool load (const char *cmdline, void (**eip) (void), void **esp);
@@ -39,9 +40,12 @@ process_execute (const char *file_name)
   if (fn_copy == NULL)
     return TID_ERROR;
   strlcpy (fn_copy, file_name, PGSIZE);
+    
+    char* save_ptr;
+    char* fname = strtok_r(file_name, " ", &save_ptr);
 
   /* Create a new thread to execute FILE_NAME. */
-  tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
+  tid = thread_create (fname, PRI_DEFAULT, start_process, fn_copy);
   if (tid == TID_ERROR)
     palloc_free_page (fn_copy); 
   return tid;
@@ -92,9 +96,16 @@ start_process (void *file_name_)
    This function will be implemented in problem 2-2.  For now, it
    does nothing. */
 int
-process_wait (tid_t child_tid UNUSED) 
+process_wait (tid_t child_tid)// UNUSED) 
 {
-  while(true);
+  struct thread* t = get_thread(child_tid);
+
+  if (!t || t->status == THREAD_DYING) {
+    return -1;
+  }
+
+  while ((t = get_thread(child_tid)) && t->status != THREAD_DYING) {
+  }
   return -1;
 }
 
@@ -511,7 +522,7 @@ setup_stack (void **esp, char* file_name, char** save_ptr)
 
         free(args);
 
-        hex_dump(0, *esp, (int) ((size_t) PHYS_BASE - (size_t) *esp), true); 
+        //hex_dump(0, *esp, (int) ((size_t) PHYS_BASE - (size_t) *esp), true); 
 
   return success;
 }

@@ -94,8 +94,6 @@ syscall_handler (struct intr_frame *f)
         default:
             break; 
     }
-
-  //printf ("system call!!!!\n");
 }
 
 void halt (void)
