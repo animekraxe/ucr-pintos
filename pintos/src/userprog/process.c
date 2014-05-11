@@ -19,6 +19,7 @@
 #include "threads/vaddr.h"
 #include "threads/malloc.h"
 #include "threads/synch.h"
+#include "userprog/syscall.h"
 
 static thread_func start_process NO_RETURN;
 //static bool load (const char *cmdline, void (**eip) (void), void **esp);
@@ -41,8 +42,8 @@ process_execute (const char *file_name)
     return TID_ERROR;
   strlcpy (fn_copy, file_name, PGSIZE);
     
-    char* save_ptr;
-    char* fname = strtok_r(file_name, " ", &save_ptr);
+  char* save_ptr;
+  char* fname = strtok_r(file_name, " ", &save_ptr);
 
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (fname, PRI_DEFAULT, start_process, fn_copy);
@@ -68,8 +69,10 @@ start_process (void *file_name_)
   if_.gs = if_.fs = if_.es = if_.ds = if_.ss = SEL_UDSEG;
   if_.cs = SEL_UCSEG;
   if_.eflags = FLAG_IF | FLAG_MBS;
-  //success = load (file_name, &if_.eip, &if_.esp);
   success = load (file_name, &if_.eip, &if_.esp, &save_ptr);
+
+  //Set user process load status
+  thread_current()->process->load_state = success ? LOAD_SUCCESS : LOAD_FAILURE;
 
   /* If load failed, quit. */
   palloc_free_page (file_name);
@@ -98,22 +101,42 @@ start_process (void *file_name_)
 int
 process_wait (tid_t child_tid)// UNUSED) 
 {
-  struct thread* t = get_thread(child_tid);
+  //Get child thread
+  //struct thread* t = get_thread(child_tid);
+  struct process* child = get_child(child_tid);
 
-  if (!t || t->status == THREAD_DYING) {
+  //If invalid or already terminated or already waiting
+  //if (t == NULL || t->process->already_waiting) {
+  if (child == NULL || child->already_waiting) {
+      //if (t==NULL) printf("tnull\n");
     return -1;
   }
 
-  while ((t = get_thread(child_tid)) && t->status != THREAD_DYING) {
+  //This child is NOT a child of the current thread
+  //if (thread_current()->tid != t->process->parent_tid) {
+  if (thread_current()->tid != child->parent_tid) {
+    return -1;
   }
-  return -1;
+
+  //t->process->already_waiting = true;
+  child->already_waiting = true;
+
+  //while ((t = get_thread(child_tid)) && t->status != THREAD_DYING) {}
+  while(!get_child(child_tid)->is_done);
+
+  return exit_child((int)child_tid);
 }
+
 
 /* Free the current process's resources. */
 void
 process_exit (void)
 {
   struct thread *cur = thread_current ();
+
+  if(cur->executing_file) file_close(cur->executing_file);
+  process_cleanup(cur);
+  
   uint32_t *pd;
 
   /* Destroy the current process's page directory and switch back
@@ -248,6 +271,9 @@ load (const char *file_name, void (**eip) (void), void **esp, char** save_ptr)
       goto done; 
     }
 
+  file_deny_write(file);
+  t->executing_file = file;
+
   /* Read and verify executable header. */
   if (file_read (file, &ehdr, sizeof ehdr) != sizeof ehdr
       || memcmp (ehdr.e_ident, "\177ELF\1\1\1", 7)
@@ -321,8 +347,9 @@ load (const char *file_name, void (**eip) (void), void **esp, char** save_ptr)
     }
 
   /* Set up stack. */
-  if (!setup_stack (esp, (char *)file_name, save_ptr))
+  if (!setup_stack (esp, (char *)file_name, save_ptr)) {
     goto done;
+  }
 
   /* Start address. */
   *eip = (void (*) (void)) ehdr.e_entry;
@@ -331,7 +358,7 @@ load (const char *file_name, void (**eip) (void), void **esp, char** save_ptr)
 
  done:
   /* We arrive here whether the load is successful or not. */
-  file_close (file);
+  //file_close (file);
   return success;
 }
 
@@ -468,63 +495,53 @@ setup_stack (void **esp, char* file_name, char** save_ptr)
         return success;
       }
     }
+    
+    // Build the stack
+    const int ARGLIMIT = 30;
+    char* args [ARGLIMIT];
+    int i = 0, argc = 0;
+    char* token = file_name;
+    
+    //Code adapted from pseudo code on whiteboard in lab6
+    //Parse tokens forward
+    while (token) {
+      *esp -= strlen(token) + 1;
+      memcpy(*esp, token, strlen(token) + 1);
+      args[argc] = *esp;
+      ++argc;
+      token = strtok_r(NULL, " ", save_ptr);
+    }
 
-        const int ARGLIMIT = 30;
-        char** args = malloc(ARGLIMIT * sizeof(char*));
-        //char* args [ARGLIMIT];
-        int i = 0, argc = 0;
-        //char* token = file_name;
-        char* token;
-/*
-        while (token) {
-          *esp -= strlen(token) + 1;
-          memcpy(*esp, token, strlen(token) + 1);
-          args[argc] = *esp;
-          ++argc;
-          token = strtok_r(NULL, " ", save_ptr);
-        }
-*/
-        for (token = (char*) file_name; token != NULL;
-            token = strtok_r(NULL, " ", save_ptr))
-        {
-            *esp -= strlen(token) + 1;
-            args[argc] = *esp;
-            argc++;
+    //Last vector NULL
+    args[argc] = NULL;
 
-            memcpy(*esp, token, strlen(token) + 1);
-        }
+    //Word align
+    i = (size_t) *esp % 4;
+    if (i != 0) {
+      *esp -= i;
+      memcpy(*esp, &args[argc], i);
+    }
+           
+    //Place args in reverse on stack with NULL at args[argc]
+    for (i = argc; i >= 0; --i) {
+      *esp -= sizeof(char*);
+      memcpy(*esp, &args[i], sizeof(char*));
+    }
 
-        args[argc] = 0; 
+    //argv pointer
+    char* argv = *esp;
+    *esp -= sizeof(char**);
+    memcpy(*esp, &argv, sizeof(char**));
 
-        i = (size_t) *esp % 4;
-        if (i) {
-          *esp -= i;
-          memcpy(*esp, &args[argc], i);
-          //memcpy(*esp, NULL, sizeof(void*));
-        }
-               
-        for (i = argc; i >= 0; --i) {
-        //for (i = 0; i < argc; ++i) {
-          *esp -= sizeof(char*);
-          memcpy(*esp, &args[i], sizeof(char*));
-        }
+    //argc
+    *esp -= sizeof(int);
+    memcpy(*esp, &argc, sizeof(int));
 
-        char* argv = *esp;
-        *esp -= sizeof(char**);
-        memcpy(*esp, &argv, sizeof(char**));
-
-        *esp -= sizeof(int);
-        memcpy(*esp, &argc, sizeof(int));
-
-        *esp -= sizeof(void*);
-        memcpy(*esp, &args[argc], sizeof(void*));
-        //memcpy(*esp, NULL, sizeof(void*));
-
-        free(args);
-
-        //hex_dump(0, *esp, (int) ((size_t) PHYS_BASE - (size_t) *esp), true); 
-
-  return success;
+    //fake return
+    *esp -= sizeof(void*);
+    memcpy(*esp, &args[argc], sizeof(void*));
+    
+    return success;
 }
 
 /* Adds a mapping from user virtual address UPAGE to kernel

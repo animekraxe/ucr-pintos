@@ -8,12 +8,16 @@
 #include "threads/interrupt.h"
 #include "threads/intr-stubs.h"
 #include "threads/palloc.h"
+#include "threads/malloc.h"
 #include "threads/switch.h"
 #include "threads/synch.h"
 #include "threads/vaddr.h"
 #ifdef USERPROG
 #include "userprog/process.h"
 #endif
+
+// Start FD for processes after 2
+#define FD_START 3
 
 /* Random value for struct thread's `magic' member.
    Used to detect stack overflow.  See the big comment at the top
@@ -205,6 +209,20 @@ thread_create (const char *name, int priority,
   sf->ebp = 0;
 
   intr_set_level (old_level);
+
+  // Initialize user process
+  struct process* pr = malloc(sizeof(struct process));
+  pr->pid = (pid_t)tid;
+  pr->parent_tid = thread_current()->tid;
+  pr->already_waiting = false;
+  pr->load_state = LOAD_PENDING;
+  pr->is_done = false;
+  pr->fd = FD_START;
+  t->process = pr;
+  t->fd = FD_START;
+
+  //New process is a child to current process
+  list_push_back(&thread_current()->child_list, &pr->cpelem);
 
   /* Add to run queue. */
   thread_unblock (t);
@@ -470,6 +488,10 @@ init_thread (struct thread *t, const char *name, int priority)
   t->priority = priority;
   t->magic = THREAD_MAGIC;
   list_push_back (&all_list, &t->allelem);
+
+  list_init(&t->file_list);
+  list_init(&t->child_list);
+  t->process = NULL;
 }
 
 /* Allocates a SIZE-byte frame at the top of thread T's stack and
@@ -605,5 +627,28 @@ struct thread* get_thread (tid_t tid)
      }
   }
   intr_set_level (old_level);
-  return 0;
+  return NULL;
+}
+
+struct process* get_child (int pid)
+{
+    struct list_elem* e;
+    struct thread* curr = thread_current();
+    for (e = list_begin(&curr->child_list); e != list_end(&curr->child_list);
+         e = list_next(e))
+    {
+        struct process* p = list_entry(e, struct process, cpelem);
+        if (p->pid == pid)
+            return p;
+    }
+    return NULL;
+}
+
+int exit_child (int pid)
+{
+  struct process* child = get_child(pid);
+  list_remove(&child->cpelem);
+  int exit_status = child->exit_status;
+  free(child);
+  return exit_status;
 }
