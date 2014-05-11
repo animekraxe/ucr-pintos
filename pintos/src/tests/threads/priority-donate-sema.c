@@ -54,7 +54,7 @@ l_thread_func (void *ls_)
   lock_acquire (&ls->lock);
   msg ("Thread L acquired lock.");
   sema_down (&ls->sema);
-  msg ("Thread L downed semaphore."); 
+  msg ("Thread L downed semaphore.");
   lock_release (&ls->lock);
   msg ("Thread L finished.");
 }

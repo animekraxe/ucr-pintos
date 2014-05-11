@@ -92,7 +92,6 @@ simple_thread_func (void *data_)
   for (i = 0; i < ITER_CNT; i++) 
     {
       lock_acquire (data->lock);
-      msg("ID: %d, PRI: %d\n", data->id, thread_get_priority());
       *(*data->op)++ = data->id;
       lock_release (data->lock);
       thread_yield ();
