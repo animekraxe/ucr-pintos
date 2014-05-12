@@ -42,6 +42,7 @@ process_execute (const char *file_name)
     return TID_ERROR;
   strlcpy (fn_copy, file_name, PGSIZE);
     
+  //Parse file name from args for proper thread name
   char* save_ptr;
   char* fname = strtok_r(file_name, " ", &save_ptr);
 
@@ -61,6 +62,7 @@ start_process (void *file_name_)
   struct intr_frame if_;
   bool success;
 
+  //Parse file name from args for proper process name
   char* save_ptr;
   file_name = strtok_r(file_name, " ", &save_ptr);
   
@@ -134,7 +136,11 @@ process_exit (void)
 {
   struct thread *cur = thread_current ();
 
-  if(cur->executing_file) file_close(cur->executing_file);
+  //Close executable file for process
+  if(cur->executing_file) 
+    file_close(cur->executing_file);
+
+  //Cleanup process resources
   process_cleanup(cur);
   
   uint32_t *pd;
@@ -503,7 +509,7 @@ setup_stack (void **esp, char* file_name, char** save_ptr)
     char* token = file_name;
     
     //Code adapted from pseudo code on whiteboard in lab6
-    //Parse tokens forward
+    //Parse tokens forward into args array
     while (token) {
       *esp -= strlen(token) + 1;
       memcpy(*esp, token, strlen(token) + 1);

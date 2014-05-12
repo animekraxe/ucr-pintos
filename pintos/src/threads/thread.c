@@ -608,11 +608,13 @@ allocate_tid (void)
    Used by switch.S, which can't figure it out on its own. */
 uint32_t thread_stack_ofs = offsetof (struct thread, stack);
 
+//Get a threads status by checking the all threads list
 enum thread_status get_thread_status (tid_t tid)
 {
     return get_thread(tid)->status;
 }
 
+//Get a thread from the all thread list
 struct thread* get_thread (tid_t tid)
 {
   enum intr_level old_level = intr_disable(); 
@@ -630,6 +632,7 @@ struct thread* get_thread (tid_t tid)
   return NULL;
 }
 
+//Get a child process from the child_list
 struct process* get_child (int pid)
 {
     struct list_elem* e;
@@ -644,6 +647,7 @@ struct process* get_child (int pid)
     return NULL;
 }
 
+//Free child resources
 int exit_child (int pid)
 {
   struct process* child = get_child(pid);
